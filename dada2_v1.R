@@ -51,7 +51,7 @@ for(sam in sample.names) {
 rm(derepF); rm(derepR)
 # Construct sequence table and remove chimeras
 seqtab <- makeSequenceTable(mergers)
-saveRDS(seqtab, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/test/seqtab.rds")
+saveRDS(seqtab, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/seqtab.rds")
 
 head(merger[1])
 dim(seqtab)
@@ -71,7 +71,12 @@ track <- cbind(out, sapply(mergers, getN), rowSums(seqtab.nochim))
 colnames(track) <- c("input", "filtered", "merged", "nonchim")
 rownames(track) <- sample.names
 track
-write.table(track,"/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/test/track.txt",quote=F, sep="\t")
+write.table(track,"/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/track.txt",quote=F, sep="\t")
 
 
 tax <- assignTaxonomy(seqtab, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/sh_general_release_dynamic_01.12.2017.fasta", multithread=TRUE)
+saveRDS(tax, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/tax_final.rds")
+
+tax.print <- tax # Removing sequence rownames for display only
+rownames(tax.print) <- NULL
+head(tax.print)
