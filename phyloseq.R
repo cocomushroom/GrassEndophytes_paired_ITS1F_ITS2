@@ -16,23 +16,6 @@ seqtab.nochim<-readRDS(file = "/Users/kc178/Documents/Florida_projects/florencia
 ## Not a QIIME2 format
 meta <-read.delim("/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/metadata_ITS_update.txt", row.names = 1)
 
-
-## Load table for mycotoxin## ZEAR_4_SULF, Ergine and Avenacein_Y_Q1 are only presense/absense
-toxin_value<-data.frame(read.delim("/Users/kc178/Documents/Florida_projects/florencia/mycotoxin_reformat/value.txt"))
-toxin_meta<- data.frame(read.delim("/Users/kc178/Documents/Florida_projects/florencia/mycotoxin_reformat/metadata.txt"))
-
-toxin_value<- apply(toxin_value, 2, function(x){gsub("BLOQ",0.5,x)}) ## Replace cells with peak on HPLC but below detection limit to 0.5
-toxin_value[is.na(toxin_value)] <- 0
-toxin_value[toxin_value==""]<-0
-toxin_value<- data.frame(MycoID=toxin_value[,1], apply(toxin_value[,-1], 2, as.numeric))
-
-toxin_quality<-toxin_value
-toxin_quality[toxin_quality>0]<-1
-toxin_quality$MycoID<-toxin_value$MycoID
-
-## Merge with Mycotoxin#
-
-
 ##### Start Phyloseq#####
 ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
                sample_data(meta), 
@@ -246,20 +229,16 @@ p+facet_wrap(~Neighbor)
 
 
 ### Comparison###
-plant_group = get_variable(psf_R, "Genus")
-plant_ano = anosim(distance(psf_R, "bray"), plant_group)
-plant_ano$signif
-plant_ano$statistic
+plant_group_sym = get_variable(psf_R, "Symptom_condition")
+plant_ano_sym = anosim(distance(psf_R, "bray"), plant_group)
+plant_ano_sym$signif
+plant_ano_sym$statistic
 
-plant_group = get_variable(psf_R_en, "Plant")
+plant_group = get_variable(psf_R_en, "Plant_species")
 plant_ano = anosim(distance(psf_R_en, "bray"), plant_group)
 plant_ano$signif
 plant_ano$statistic
 
-plant_group = get_variable(psf_R_en, "Genus")
-plant_ano = anosim(distance(psf_R_en, "bray"), plant_group)
-plant_ano$signif
-plant_ano$statistic
 
 
 loc_group = get_variable(psf_R, "Location")
@@ -267,31 +246,29 @@ loc_ano = anosim(distance(psf_R, "bray"), loc_group)
 loc_ano$signif
 loc_ano$statistic
 
+##out<-c("plant_ano", capture.output(plant_ano), "plant_ano_sym", capture.output(plant_ano_sym))
+
+
 ## Adonis Permutation test
 df = as(sample_data(psf_R_en), "data.frame")
 d = distance(psf_R_en, "bray")
-psf_Radonis = adonis(d ~ Plant + Location= , df)
+psf_Radonis = adonis(d ~ Plant_species + Location , df)
 psf_Radonis
 
 plot(psf_Radonis$aov.tab)
 
 
-df = as(sample_data(psf_R_en), "data.frame")
-d = distance(psf_R_en, "bray")
-psf_Radonis = adonis(d ~ Genus , df)
-psf_Radonis
-
-plot(psf_Radonis$aov.tab)
 
 df = as(sample_data(psf_R_bahia_en), "data.frame")
 d = distance(psf_R_bahia_en, "bray")
-psf_Radonis = adonis(d ~ Location , df)
+psf_Radonis = adonis(d ~ Plant_sci , df)
 psf_Radonis
 
 ## Richness ###
 
 plot_richness(psf_R, x = "Symptom_condition") + geom_boxplot()
-plot_richness(psf_R_pa, x = "Plant") + geom_boxplot()
+plot_richness(psf_R_en, x = "Plant_species") + geom_boxplot()
+plot_richness(psf_R_pa, x = "Plant_species") + geom_boxplot()
 plot_richness(psf_R_pa, x = "Location") + geom_boxplot()
 
 ### Networks ##
