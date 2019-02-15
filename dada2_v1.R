@@ -5,6 +5,8 @@
 ### https://github.com/benjjneb/ITS-Workflow/blob/master/ITS_workflow.md
 
 library(dada2); packageVersion("dada2")
+library(ggplot2); packageVersion("ggplot2")
+
 # File parsing
 pathF <- "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/R1/cut" # CHANGE ME to the directory containing your demultiplexed forward-read fastqs
 pathR <- "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/R2/cut" # CHANGE ME ...
@@ -60,6 +62,8 @@ seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE
 dim(seqtab.nochim)
 
 sum(seqtab.nochim)/sum(seqtab)
+saveRDS(seqtab.nochim, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/seqtabnochim.rds")
+
 
 getN <- function(x) sum(getUniques(x))
 
@@ -80,3 +84,6 @@ saveRDS(tax, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/IT
 tax.print <- tax # Removing sequence rownames for display only
 rownames(tax.print) <- NULL
 head(tax.print)
+
+
+
