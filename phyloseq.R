@@ -10,6 +10,9 @@ library("ggplot2")
 
 ## Load taxa produced by dada2##
 tax<-readRDS(file = "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/tax_final.rds")
+tax_R<-gsub(".__", "",tax) ## If having problem with tax rank, skip this
+    
+
 ## Load seqtab.nochim produced by dada2##
 seqtab.nochim<-readRDS(file = "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/seqtabnochim.rds")
 
@@ -19,10 +22,16 @@ meta <-read.delim("/Users/kc178/Documents/Florida_projects/florencia/asilomar_re
 ##### Start Phyloseq#####
 ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
                sample_data(meta), 
-               tax_table(tax))
+               tax_table(tax_R))
 ps
+
+
+
+
 # Keep fungi only
-psf <- subset_taxa(ps, Kingdom=="k__Fungi")
+psf <- subset_taxa(ps, Kingdom=="Fungi")
+saveRDS(psf, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf.rds")
+
 
 # check read distribution
 readsumsdf = data.frame(nreads = sort(taxa_sums(psf), TRUE), sorted = 1:ntaxa(psf), 
@@ -42,6 +51,7 @@ nreads
 #### Create Rarified table ### 
 set.seed(1111)
 psf_R = rarefy_even_depth(psf, sample.size = nreads[[1]])
+saveRDS(psf_R, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R.rds")
 
 ## to check if the rarefaction did work
 #par(mfrow = c(1, 2))
@@ -56,6 +66,13 @@ psf_R_pa <- subset_samples(psf_R, Symptom_condition=="Symptom")
 psf_R_en <- subset_samples(psf_R, Symptom_condition=="No_Symptom")
 psf_R_bahia<- subset_samples(psf_R, Plant_species=="Paspalum_notatum")
 psf_R_bahia_en<- subset_samples(psf_R_bahia, Symptom_condition=="No_Symptom")
+psf_R_smut<- subset_samples(psf_R, Plant_species=="Sporobolus_indicus")
+
+saveRDS(psf_R_pa, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R_pa.rds")
+saveRDS(psf_R_en, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R_en.rds")
+saveRDS(psf_R_bahia, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R_bahia.rds")
+saveRDS(psf_R_bahia_en, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R_bahia_en.rds")
+saveRDS(psf_R_smut, "/Users/kc178/Documents/Florida_projects/florencia/asilomar_redo/ITS/psf_R_smut.rds")
 
 
 
