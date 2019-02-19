@@ -1,0 +1,3 @@
+#When want to check suspecious taxonomy, use the following script to get the fasta with taxonomy
+library(microbiome)
+write_phyloseq(pseq, 'TAXONOMY')
