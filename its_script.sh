@@ -9,11 +9,16 @@
 ## Reverse complement ITS1F: TTACTTCCTCTAAATGACCAAG
 ## 5'-> 3' ITS2 primer: GCTGCGTTCTTCATCGATGC
 ## Reverse complement ITS2 primer: GCATCGATGAAGAACGCAGC
+## 5'->3' ITS4 primer: TCCTCCGCTTATTGATATGC
+## Reverse complement ITS4 primer: GCATATCAATAAGCGGAGGA
+
 
 
 
 mkdir cut
 touch log
+## Below are for reads amplified with ITS1F and ITS2, adjust the reverse sequence accordingly
+
 for file in `find . -name "*R1*fastq.gz"`; do fastaFile=${file}; cutadapt -g CTTGGTCATTTAGAGGAAGTAA -a GCATCGATGAAGAACGCAGC -o cut/${fastaFile}_trimmed.fastq.gz ${fastaFile} >>log; done
 
 for file in `find . -name "*R2*fastq.gz"`; do fastaFile=${file}; cutadapt -g GCTGCGTTCTTCATCGATGC -a TTACTTCCTCTAAATGACCAAG -o cut/${fastaFile}_trimmed.fastq.gz ${fastaFile} >>log; done
